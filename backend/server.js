@@ -1,24 +1,18 @@
 const colors = require('colors') 
 const dotenv = require('dotenv').config()
 const express = require('express')
+const productRoutes = require('./routes/productRoutes')
 const connectDB = require('./config/db')
-const products = require('./data/products')
+
 
 connectDB()
 
 const app  = express()
 
+app.use('/api/products', productRoutes)
+
 app.get('/', (req, res) => {
     res.send('API is running')
-})
-
-app.get('/api/products', (req, res) => {
-    res.json(products)
-})
-
-app.get('/api/products/:id', (req, res) => {
-    const product = products.find(p=> p._id === req.params.id)
-    res.json(product)
 })
 
 const PORT = process.env.PORT || 5000
