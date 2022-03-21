@@ -4,8 +4,8 @@ import PropTypes from 'prop-types'
 
 const Rating = ({ value, text }) => {
     return (
-        <div className="rating">
-            <span>
+        <div className="rating" >
+            <span >
                 {value >= 1 ? <FaStar /> : value >= 0.5 ? <FaStarHalfAlt /> : <FaRegStar />}
             </span>
             <span>
@@ -26,9 +26,13 @@ const Rating = ({ value, text }) => {
 }
 
 FaStar.defaultProps = {
-    color: '#f8e825',
+    //color: '#f8e825',
     //< FaStar style = {{ color: '#f8e825' }} />
 }
+.FaStar = {
+    color: '#f8e825', 
+}
+
 FaStarHalfAlt.defaultProps = {
     color: '#f8e825'
 }
