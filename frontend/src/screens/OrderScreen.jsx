@@ -1,5 +1,5 @@
 import { Col, ListGroup, Image, Row, Card } from 'react-bootstrap'
-import { Link, useNavigate, useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
@@ -13,7 +13,6 @@ import { ORDER_PAY_RESET } from '../constants/orderConstants'
 
 const OrderScreen = () => {
     const dispatch = useDispatch()
-    const navigate = useNavigate()
     const params = useParams()
     const orderId = params.id
 
