@@ -25,8 +25,10 @@ const OrderScreen = () => {
     }
 
     useEffect(() => {
-        dispatch(getOrderDetails(orderId))
-    }, [dispatch, orderId])
+        if (!order || order._id !== orderId) {
+            dispatch(getOrderDetails(orderId))
+        }
+    }, [order, orderId, dispatch])
 
 
     return isLoading ? <Loader />
@@ -59,9 +61,9 @@ const OrderScreen = () => {
                                 <p><strong>Method: </strong> {order.paymentMethod}</p>
                                 {order.isPaid ? (
                                     <Message variant='success'>Paid on {order.paidAt}</Message>)
-                                    : ( 
+                                    : (
                                         <Message variant='danger'>Not Paid </Message>
-                                  )}
+                                    )}
                             </ListGroup.Item>
 
                             <ListGroup.Item>
