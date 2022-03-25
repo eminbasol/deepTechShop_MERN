@@ -1,4 +1,5 @@
 import { useEffect } from "react"
+import { useNavigate } from 'react-router-dom'
 import { LinkContainer } from 'react-router-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import Message from '../components/Message'
@@ -9,12 +10,20 @@ import { FaTimes, FaCheck, FaEdit, FaTrash } from 'react-icons/fa'
 
 const UserListScreen = () => {
     const dispatch = useDispatch()
+    const navigate = useNavigate()
 
     const userList = useSelector(state => state.userList)
     const { isLoading, isError, users } = userList
 
+    const userLogin = useSelector(state => state.userLogin)
+    const { userInfo } = userLogin
+
     useEffect(() => {
-        dispatch(listUsers())
+        if (userInfo && userInfo.isAdmin) {
+            dispatch(listUsers())
+        } else {
+            navigate('/login')
+        }
     }, [dispatch])
 
 
@@ -43,7 +52,7 @@ const UserListScreen = () => {
                                 <td>{user._id}</td>
                                 <td>{user.name}</td>
                                 <td><a href={`mailto:${user.email}`}>{user.email}</a></td>
-                                <td>{user.isAdmin ? (<FaCheck style={{ color: 'green' }} />) : (<FaTimes style={{color:'red'}} />)}</td>
+                                <td>{user.isAdmin ? (<FaCheck style={{ color: 'green' }} />) : (<FaTimes style={{ color: 'red' }} />)}</td>
                                 <td>
                                     <LinkContainer to={`/user/${user._id}/edit`}>
                                         <Button variant='light' className='btn-sm'>
