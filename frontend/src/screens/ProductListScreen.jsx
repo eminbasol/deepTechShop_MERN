@@ -6,7 +6,7 @@ import Message from '../components/Message'
 import Loader from '../components/Loader'
 import { Button, Col, Table, Row } from "react-bootstrap"
 import { FaEdit, FaTrash, FaPlus } from 'react-icons/fa'
-import { listProducts } from "../actions/productActions"
+import { deleteProduct, listProducts } from "../actions/productActions"
 
 const ProductListScreen = () => {
     const dispatch = useDispatch()
@@ -14,6 +14,9 @@ const ProductListScreen = () => {
 
     const productList = useSelector(state => state.productList)
     const { isLoading, isError, products } = productList
+
+    const productDelete = useSelector(state => state.productDelete)
+    const { isLoading: isLoadingDelete, isError: isErrorDelete, isSuccess: isSuccessDelete } = productDelete
 
     const userLogin = useSelector(state => state.userLogin)
     const { userInfo } = userLogin
@@ -25,16 +28,16 @@ const ProductListScreen = () => {
         } else {
             navigate('/login')
         }
-    }, [dispatch, navigate, userInfo])
+    }, [dispatch, navigate, userInfo, isSuccessDelete])
 
- 
+
     const deleteHandler = (id) => {
         if (window.confirm('Are you sure?')) {
-            //DELETE PRODUCT
+            dispatch(deleteProduct(id))
         }
     }
 
-    const createProductHandler= (product) => {
+    const createProductHandler = (product) => {
         // CREATE PODUCT
     }
 
@@ -50,7 +53,8 @@ const ProductListScreen = () => {
                     </Button>
                 </Col>
             </Row>
-
+            {isLoadingDelete && <Loader/>}
+            {isErrorDelete &&  <Message variant='danger'>{isErrorDelete}</Message> }
             {isLoading ? <Loader /> : isError ? <Message variant='danger'>{isError}</Message> : (
                 <Table striped bordered hover responsive className='table-sm'>
                     <thead>
