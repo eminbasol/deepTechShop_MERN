@@ -1,13 +1,13 @@
 const colors = require('colors')
 const dotenv = require('dotenv').config()
+const path = require('path');
 const express = require('express')
 const { errorHandler, notFound } = require('./middleware/errorMiddleware')
 const productRoutes = require('./routes/productRoutes')
 const userRoutes = require('./routes/userRoutes')
 const orderRoutes = require('./routes/orderRoutes')
-
-const connectDB = require('./config/db')
-
+const uploadRoutes = require('./routes/uploadRoutes')
+const connectDB = require('./config/db');
 
 connectDB()
 
@@ -18,7 +18,12 @@ app.use(express.json())
 app.use('/api/products', productRoutes)
 app.use('/api/users', userRoutes)
 app.use('/api/orders', orderRoutes)
+app.use('/api/upload', uploadRoutes)
+
 app.get('/api/config/paypal', (req, res) => res.send(process.env.PAYPAL_CLIENT_ID))
+
+const dirname = path.resolve()
+app.use('/uploads', express.static(path.join(dirname, '/uploads')))
 
 
 app.use(notFound)
