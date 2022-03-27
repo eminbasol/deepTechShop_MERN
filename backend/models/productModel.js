@@ -49,7 +49,7 @@ const productSchema = mongoose.Schema(
             default: 0
         },
         numReviews: {
-            type: String,
+            type: Number,
             required: true,
             default: 0
         },
