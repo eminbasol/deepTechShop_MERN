@@ -6,7 +6,8 @@ import Message from '../components/Message'
 import Loader from '../components/Loader'
 import { Button, Col, Table, Row } from "react-bootstrap"
 import { FaEdit, FaTrash, FaPlus } from 'react-icons/fa'
-import { deleteProduct, listProducts } from "../actions/productActions"
+import { createProduct, deleteProduct, listProducts } from "../actions/productActions"
+import { PRODUCT_CREATE_RESET } from "../constants/productConstants"
 
 const ProductListScreen = () => {
     const dispatch = useDispatch()
@@ -18,17 +19,27 @@ const ProductListScreen = () => {
     const productDelete = useSelector(state => state.productDelete)
     const { isLoading: isLoadingDelete, isError: isErrorDelete, isSuccess: isSuccessDelete } = productDelete
 
+    const productCreate = useSelector(state => state.productCreate)
+    const { isLoading: isLoadingCreate, isError: isErrorCreate, isSuccess: isSuccessCreate, product: createdProduct } = productCreate
+
     const userLogin = useSelector(state => state.userLogin)
     const { userInfo } = userLogin
 
 
     useEffect(() => {
-        if (userInfo && userInfo.isAdmin) {
-            dispatch(listProducts())
-        } else {
+        dispatch({ type: PRODUCT_CREATE_RESET })
+
+        if (!userInfo.isAdmin) {
             navigate('/login')
         }
-    }, [dispatch, navigate, userInfo, isSuccessDelete])
+
+        if (isSuccessCreate) {
+            navigate(`/admin/product/${createdProduct._id}/edit`)
+        } else {
+            dispatch(listProducts())
+        }
+
+    }, [dispatch, navigate, userInfo, isSuccessDelete, isSuccessCreate, createdProduct])
 
 
     const deleteHandler = (id) => {
@@ -37,8 +48,8 @@ const ProductListScreen = () => {
         }
     }
 
-    const createProductHandler = (product) => {
-        // CREATE PODUCT
+    const createProductHandler = () => {
+        dispatch(createProduct())
     }
 
     return (
@@ -53,8 +64,10 @@ const ProductListScreen = () => {
                     </Button>
                 </Col>
             </Row>
-            {isLoadingDelete && <Loader/>}
-            {isErrorDelete &&  <Message variant='danger'>{isErrorDelete}</Message> }
+            {isLoadingDelete && <Loader />}
+            {isErrorDelete && <Message variant='danger'>{isErrorDelete}</Message>}
+            {isLoadingCreate && <Loader />}
+            {isErrorCreate && <Message variant='danger'>{isErrorCreate}</Message>}
             {isLoading ? <Loader /> : isError ? <Message variant='danger'>{isError}</Message> : (
                 <Table striped bordered hover responsive className='table-sm'>
                     <thead>
