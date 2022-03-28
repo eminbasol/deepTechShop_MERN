@@ -41,7 +41,6 @@ const ProductScreen = () => {
             dispatch(listProductDetails(productId))
             dispatch({ type: PRODUCT_CREATE_REVIEW_RESET })
         }
-        dispatch(listProductDetails(productId))
     }, [dispatch, product._id, productId, isSuccessProductReview])
 
 
