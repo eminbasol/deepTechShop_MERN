@@ -1,10 +1,12 @@
+import { useEffect } from 'react'
 import { Col, ListGroup, Image, Row, Card, Button } from 'react-bootstrap'
 import { Link, useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import Message from '../components/Message'
 import CheckoutSteps from '../components/CheckoutSteps'
 import { createOrder } from '../actions/orderActions'
-import { useEffect } from 'react'
+import { USER_DETAILS_RESET } from '../constants/userConstants'
+import { ORDER_CREATE_RESET } from '../constants/orderConstants'
 
 
 const PlaceOrderScreen = () => {
@@ -12,11 +14,18 @@ const PlaceOrderScreen = () => {
     const navigate = useNavigate()
 
     const cart = useSelector(state => state.cart)
+
+    if (!cart.shippingAddress.address) {
+        navigate('/shipping')
+    } else if (!cart.paymentMethod) {
+        navigate('/payment')
+    }
+
+    //  Calculate prices
     const addDecimals = (num) => {
         return (Math.round(num * 100) / 100).toFixed(2)
     }
 
-    //  Calculate prices
     cart.itemsPrice = addDecimals(cart.cartItems.reduce((acc, item) => acc + item.price * item.qty, 0))
     cart.shippingPrice = addDecimals(cart.itemsPrice > 100 ? 0 : 100)
     cart.taxPrice = addDecimals(Number((0.18 * cart.itemsPrice).toFixed(2)))
@@ -30,8 +39,10 @@ const PlaceOrderScreen = () => {
     useEffect(() => {
         if (isSuccess) {
             navigate(`/order/${order._id}`)
+            dispatch({ type: USER_DETAILS_RESET })
+            dispatch({ type: ORDER_CREATE_RESET })
         }
-    }, [navigate, isSuccess ])
+    }, [navigate, isSuccess])
 
     const placeOrderHandler = () => {
         dispatch(createOrder({
