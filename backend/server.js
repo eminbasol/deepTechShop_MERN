@@ -7,11 +7,16 @@ const productRoutes = require('./routes/productRoutes')
 const userRoutes = require('./routes/userRoutes')
 const orderRoutes = require('./routes/orderRoutes')
 const uploadRoutes = require('./routes/uploadRoutes')
-const connectDB = require('./config/db');
+const connectDB = require('./config/db')
+const morgan = require('morgan')
 
 connectDB()
 
 const app = express()
+
+if(process.env.NODE.ENV === 'development'){
+    app.use(morgan('dev'))
+}
 
 app.use(express.json())
 
