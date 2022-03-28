@@ -50,7 +50,8 @@ export const userRegisterReducer = (state = {}, action) => {
             return { isLoading: false, userInfo: action.payload }
         case USER_REGISTER_FAIL:
             return { isLoading: false, isError: action.payload }
-
+        case USER_LOGOUT:
+            return {}
         default:
             return state
     }
