@@ -31,7 +31,7 @@ const OrderScreen = () => {
 
     const userLogin = useSelector((state => state.userLogin))
     const { userInfo } = userLogin
-    
+
     if (!isLoading) {
         //  Calculate prices
         const addDecimals = (num) => {
@@ -41,9 +41,9 @@ const OrderScreen = () => {
     }
 
     useEffect(() => {
-        if(!userInfo){
+        if (!userInfo) {
             navigate('/login')
-        } 
+        }
 
         const addPayPalScript = async () => {
             const { data: clientId } = await axios.get('/api/config/paypal')
@@ -57,7 +57,7 @@ const OrderScreen = () => {
             document.body.appendChild(script)
         }
 
-        if (!order || isSuccessPay || isSuccessDeliver) {
+        if (!order || successPay || successDeliver || order._id !== orderId) {
             dispatch({ type: ORDER_PAY_RESET })
             dispatch({ type: ORDER_DELIVER_RESET })
             dispatch(getOrderDetails(orderId))
@@ -68,7 +68,7 @@ const OrderScreen = () => {
                 setSdkReady(true)
             }
         }
-    }, [order, orderId, dispatch, isSuccessPay, isSuccessDeliver , userInfo , navigate])
+    }, [order, orderId, dispatch, isSuccessPay, isSuccessDeliver, userInfo, navigate])
 
     const successPaymentHandler = (paymentResult) => {
         console.log(paymentResult)
@@ -202,7 +202,7 @@ const OrderScreen = () => {
                                     )}
                                 </ListGroup.Item>
                             )}
-                            {isLoadingDeliver && <Loader/>}
+                            {isLoadingDeliver && <Loader />}
                             {userInfo && userInfo.isAdmin && order.isPaid && !order.isDelivered && (
                                 <ListGroup.Item>
                                     <Button type='button' className='btn btn-block' onClick={deliverHandler}>
